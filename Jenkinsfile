@@ -12,6 +12,7 @@ pipeline {
                 script {
                     // Install required python packages
                     sh 'pip install -r requirements.txt'
+                    
                 }
             }
         }
