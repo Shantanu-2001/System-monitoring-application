@@ -1,6 +1,9 @@
 pipeline {
     agent any
 
+    environment {
+        SCANNER_HOME=tool 'sonar-scanner'
+      }
     stages {
         stage('Checkout') {
             steps {
@@ -16,18 +19,23 @@ pipeline {
                 }
             }
         }
-
-        stage('Static Code Checking') {
-            steps {
-                script {
-                    // Run pylint on Python files and generate a report
-                    sh 'find . -name \\*.py | xargs pylint -f parseable | tee pylint.log'
-                    recordIssues(
-                        tools: [pyLint(pattern: 'pylint.log')],
-                        unstableTotalAll: 100
-                    )
+        stage("Sonarqube Analysis "){
+            steps{
+                withSonarQubeEnv('sonar-server') {
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Monitoring-app \
+                    -Dsonar.projectKey=Monitoring-app '''
                 }
             }
         }
+        stage('CQuality Gate') {
+            steps {
+                script{
+                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
+            }
+        }
+       }
+
+
+        
     }
 }
