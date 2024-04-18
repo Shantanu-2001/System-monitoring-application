@@ -58,5 +58,10 @@ pipeline {
             }
         } 
     }
+        stage('TRIVY FS SCAN') {
+            steps {
+                sh 'trivy image shantanu2001/monitoring-app:latest > trivyimage.txt'
+            }
+        }
 }
 }
