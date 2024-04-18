@@ -58,11 +58,10 @@ pipeline {
             }
         } 
     }
-        stage('TRIVY FS SCAN') {
+        stage('Docker Image Scan') {
             steps {
                 sh 'trivy image shantanu2001/monitoring-app:latest > trivyimage.txt'
             }
         }
 }
 }
-
