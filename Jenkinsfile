@@ -44,6 +44,19 @@ pipeline {
                 dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
-        }        
+        }
+        stage('Docker build and Push') {
+            steps {
+                script{
+                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
+                        sh '''
+                        docker build -t monitoring-app .
+                        docker tag monitoring-app shantanu2001/monitoring-app:latest
+                        docker push shantanu2001/monitoring-app:latest
+                        '''
+                    }
+            }
+        } 
     }
+}
 }
