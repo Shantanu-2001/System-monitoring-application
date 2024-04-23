@@ -49,11 +49,11 @@ pipeline {
             steps {
                 script {
                     // Stop and remove all containers except for SonarQube and Python
-                    sh 'docker ps -a --format "{{.Names}}" | grep -v "sonarqube\|python" | xargs -r docker stop'
-                    sh 'docker ps -a --format "{{.Names}}" | grep -v "sonarqube\|python" | xargs -r docker rm -f'
+                    sh 'docker ps -a --format "{{.Names}}" | grep -v "sonarqube\\|python" | xargs -r docker stop'
+                    sh 'docker ps -a --format "{{.Names}}" | grep -v "sonarqube\\|python" | xargs -r docker rm -f'
 
                     // Remove all images except for SonarQube and Python
-                    sh 'docker images --format "{{.Repository}}" | grep -v "sonarqube\|python" | xargs -r docker rmi -f'
+                    sh 'docker images --format "{{.Repository}}" | grep -v "sonarqube\\|python" | xargs -r docker rmi -f'
 
                 }
             }
