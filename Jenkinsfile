@@ -52,6 +52,7 @@ pipeline {
                         sh '''
                         docker build -t monitoring-app .
                         docker tag monitoring-app shantanu2001/monitoring-app:latest
+                        docker run -d -p 5000:5000 monitoring-app:latest
                         docker push shantanu2001/monitoring-app:latest
                         '''
                     }
