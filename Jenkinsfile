@@ -95,6 +95,21 @@ pipeline {
               
                 }
             }
+
+        stage('Deploy to EKS') {
+            steps {
+                script {
+                    // Authenticate with EKS cluster
+                    withKubeConfig([credentialsId: 'k8s', serverUrl: 'https://225D347B575687FF4097684D7981C12E.gr7.ap-south-1.eks.amazonaws.com
+']) {
+                        // Apply deployment
+                        sh 'kubectl apply -f deployment-service.yml'
+                    }
+                }
+            }
+        }
+
+        
         
 }
 }
