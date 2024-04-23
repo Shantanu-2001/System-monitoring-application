@@ -48,12 +48,12 @@ pipeline {
         stage('Clean Up') {
             steps {
                 script {
-                    // Stop and remove all containers with the name 'monitoring-app'
-                    sh 'docker ps -a -q --filter "name=monitoring-app" | xargs -r docker stop'
-                    sh 'docker ps -a -q --filter "name=monitoring-app" | xargs -r docker rm -f'
-                    
-                    // Remove all images with the name 'monitoring-app'
-                    sh 'docker images -q --filter "reference=monitoring-app:*" | xargs -r docker rmi -f'
+                    // Stop and remove all containers except for SonarQube and Python
+                    sh 'docker ps -a --format "{{.Names}}" | grep -v "sonarqube\|python" | xargs -r docker stop'
+                    sh 'docker ps -a --format "{{.Names}}" | grep -v "sonarqube\|python" | xargs -r docker rm -f'
+
+                    // Remove all images except for SonarQube and Python
+                    sh 'docker images --format "{{.Repository}}" | grep -v "sonarqube\|python" | xargs -r docker rmi -f'
 
                 }
             }
