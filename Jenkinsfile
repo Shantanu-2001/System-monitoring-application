@@ -45,6 +45,19 @@ pipeline {
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
+        stage('Clean Up') {
+            steps {
+                script {
+                    // Stop and remove all containers with the name 'monitoring-app'
+                    sh 'docker ps -a -q --filter "name=monitoring-app" | xargs docker stop'
+                    sh 'docker ps -a -q --filter "name=monitoring-app" | xargs docker rm -f'
+
+                    // Remove all images with the name 'monitoring-app'
+                    sh 'docker images -a | grep "monitoring-app" | awk \'{print $3}\' | xargs docker rmi -f'
+                }
+            }
+        }
+
         stage('Docker build and Push') {
             steps {
                 script{
@@ -65,11 +78,14 @@ pipeline {
             }
         }
 
-        stage('Create ECR Repository') {
+        stage(' Push image to ECR Repository') {
             steps {
                 script {
-                    // Create ECR repository if it doesn't exist
-                    sh "aws ecr describe-repositories --repository-names ${AWS_ECR_REPO} || aws ecr create-repository --repository-name ${AWS_ECR_REPO}"
+
+                    sh '''
+                    aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/t1m3i4h4
+                    docker push public.ecr.aws/t1m3i4h4/monitoring-app:latest
+                    '''
                 }
             }
         }
