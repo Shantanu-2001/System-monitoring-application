@@ -88,7 +88,7 @@ pipeline {
                     sh '''
                     docker pull shantanu2001/monitoring-app:latest
                     aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 157191672954.dkr.ecr.ap-south-1.amazonaws.com
-                    sh 'docker tag shantanu2001/monitoring-app:latest 157191672954.dkr.ecr.ap-south-1.amazonaws.com/monitoring-app:latest
+                    docker tag shantanu2001/monitoring-app:latest 157191672954.dkr.ecr.ap-south-1.amazonaws.com/monitoring-app:latest
                     docker push 157191672954.dkr.ecr.ap-south-1.amazonaws.com/monitoring-app:latest
                     '''
                     }
