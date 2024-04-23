@@ -64,6 +64,15 @@ pipeline {
                 sh 'trivy image shantanu2001/monitoring-app:latest > trivyimage.txt'
             }
         }
+
+        stage('Create ECR Repository') {
+            steps {
+                script {
+                    // Create ECR repository if it doesn't exist
+                    sh "aws ecr describe-repositories --repository-names ${AWS_ECR_REPO} || aws ecr create-repository --repository-name ${AWS_ECR_REPO}"
+                }
+            }
+        }
 }
 }
 
