@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         SCANNER_HOME=tool 'sonar-scanner'
+        registry= "public.ecr.aws/t1m3i4h4/monitoring-app"
       }
     stages {
         stage('Checkout') {
@@ -84,14 +85,10 @@ pipeline {
         stage(' Push image to ECR Repository') {
             steps {
                 script {
-
-
-                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
-                        sh '''
-                        docker pull public.ecr.aws/t1m3i4h4/monitoring-app:latest
-                        aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/t1m3i4h4
-                        docker push public.ecr.aws/t1m3i4h4/monitoring-app:latest
-                        '''
+                    sh '''
+                    aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 157191672954.dkr.ecr.ap-south-1.amazonaws.com
+                    docker push 157191672954.dkr.ecr.ap-south-1.amazonaws.com/monitoring-app:latest
+                    '''
                     }
               
                 }
