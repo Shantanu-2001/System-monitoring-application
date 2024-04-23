@@ -48,14 +48,13 @@ pipeline {
         stage('Clean Up') {
             steps {
                 script {
-                    // Stop all containers with the name 'monitoring-app'
+                    // Stop and remove all containers with the name 'monitoring-app'
                     sh 'docker ps -a -q --filter "name=monitoring-app" | xargs -r docker stop'
-                    
-                    // Remove all stopped containers with the name 'monitoring-app'
                     sh 'docker ps -a -q --filter "name=monitoring-app" | xargs -r docker rm -f'
                     
                     // Remove all images with the name 'monitoring-app'
                     sh 'docker images -q --filter "reference=monitoring-app:*" | xargs -r docker rmi -f'
+
                 }
             }
         }
