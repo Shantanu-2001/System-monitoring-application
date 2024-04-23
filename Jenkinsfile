@@ -22,12 +22,14 @@ pipeline {
         stage('Clean Up') {
             steps {
                 script {
-                    // Stop and remove all containers except for SonarQube and Python
-                    sh 'docker ps -a --format "{{.Names}}" | grep -v "sonarqube\\|python" | xargs -r docker stop'
-                    sh 'docker ps -a --format "{{.Names}}" | grep -v "sonarqube\\|python" | xargs -r docker rm -f'
-
+                    
+                    // Stop and remove all containers except for SonarQube, Python, and the specified container ID
+                    sh 'docker ps -a --format "{{.ID}} {{.Names}}" | grep -v "1d4ffdefc3bc\|sonarqube:lts-community\|python" | awk \'{print $1}\' | xargs -r docker stop'
+                    sh 'docker ps -a --format "{{.ID}} {{.Names}}" | grep -v "1d4ffdefc3bc\|sonarqube:lts-community\|python" | awk \'{print $1}\' | xargs -r docker rm -f'
+                    
+                    
                     // Remove all images except for SonarQube and Python
-                    sh 'docker images --format "{{.Repository}}" | grep -v "sonarqube\\|python" | xargs -r docker rmi -f'
+                    sh 'docker images --format "{{.Repository}}:{{.Tag}}" | grep -v "sonarqube:lts-community\|python" | xargs -r docker rmi -f'
 
                 }
             }
