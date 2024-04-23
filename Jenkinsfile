@@ -19,6 +19,19 @@ pipeline {
                 }
             }
         }
+        stage('Clean Up') {
+            steps {
+                script {
+                    // Stop and remove all containers except for SonarQube and Python
+                    sh 'docker ps -a --format "{{.Names}}" | grep -v "sonarqube\\|python" | xargs -r docker stop'
+                    sh 'docker ps -a --format "{{.Names}}" | grep -v "sonarqube\\|python" | xargs -r docker rm -f'
+
+                    // Remove all images except for SonarQube and Python
+                    sh 'docker images --format "{{.Repository}}" | grep -v "sonarqube\\|python" | xargs -r docker rmi -f'
+
+                }
+            }
+        }
         stage("Sonarqube Analysis "){
             steps{
                 withSonarQubeEnv('sonar-server') {
@@ -45,21 +58,7 @@ pipeline {
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
-        stage('Clean Up') {
-            steps {
-                script {
-                    // Stop and remove all containers except for SonarQube and Python
-                    sh 'docker ps -a --format "{{.Names}}" | grep -v "sonarqube\\|python" | xargs -r docker stop'
-                    sh 'docker ps -a --format "{{.Names}}" | grep -v "sonarqube\\|python" | xargs -r docker rm -f'
-
-                    // Remove all images except for SonarQube and Python
-                    sh 'docker images --format "{{.Repository}}" | grep -v "sonarqube\\|python" | xargs -r docker rmi -f'
-
-                }
-            }
-        }
-
-
+        
         stage('Docker build and Push') {
             steps {
                 script{
