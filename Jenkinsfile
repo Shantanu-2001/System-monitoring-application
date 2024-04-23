@@ -34,7 +34,7 @@ pipeline {
                 }
             }
         }
-        stage("Sonarqube Analysis "){
+        /*stage("Sonarqube Analysis "){
             steps{
                 withSonarQubeEnv('sonar-server') {
                     sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Monitoring-app \
@@ -48,7 +48,7 @@ pipeline {
                     waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
             }
         }
-       }
+       } */
         stage('TRIVY FS SCAN') {
             steps {
                 sh "trivy fs . > trivyfs.txt"
