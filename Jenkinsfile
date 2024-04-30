@@ -46,7 +46,7 @@ pipeline {
         stage('Quality Gate') {
             steps {
                 script{
-                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
             }
         }
        }
@@ -96,7 +96,7 @@ pipeline {
                 }
             }
 
-        stage('Deploy to EKS') {
+       /* stage('Deploy to EKS') {
             steps {
                 script {
                     // Authenticate with EKS cluster
@@ -107,7 +107,7 @@ pipeline {
                     }
                 }
             }
-        }
+        } */
 
         
         
